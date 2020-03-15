@@ -57,19 +57,19 @@ export default {
     this.customerFormStatus = 'edit'
     this.$refs.customerForm.clear()
     this.fillCustomer(res[0]);
-    this.customerID = res[1];
+    this.customerID = res[0].id;
     },
     fillCustomer(res){
-    this.$refs.customerForm.customer.name = res.data.name
-    this.$refs.customerForm.customer.email = res.data.email
-    this.$refs.customerForm.customer.age = res.data.age
-    if(res.data.skills.includes("angular")){
+    this.$refs.customerForm.customer.name = res.name
+    this.$refs.customerForm.customer.email = res.email
+    this.$refs.customerForm.customer.age = res.age
+    if(res.jsonSkills.includes("angular")){
           this.$refs.customerForm.customer.skills.angular = true
     }
-    if(res.data.skills.includes("vue")){
+    if(res.jsonSkills.includes("vue")){
           this.$refs.customerForm.customer.skills.vue = true
     }
-    if(res.data.skills.includes("react")){
+    if(res.jsonSkills.includes("react")){
           this.$refs.customerForm.customer.skills.react = true
     }
     },
@@ -114,23 +114,19 @@ export default {
          
     },
     updateCustomer(data){
-  let skills_filter = this.skillsFilter(data.skills);
-       let customer_add = {
-         data:{
-          id:1,
+      console.log(this.customerID);
+        let customer_add = {
           name:data.name,
           age:data.age,
           email:data.email,
-          skills:skills_filter
-         }
+          skills:data.skills
         };
-      this.customers =  localStorage.getItem('customers') ?
-                        JSON.parse(localStorage.getItem('customers')) : 
-                        []
-       this.customers[this.customerID]= customer_add;
-        localStorage.setItem('customers',JSON.stringify(this.customers))
-            this.details = this.customers
+
+          axios.put(`/api/customers/`+this.customerID, customer_add)
+    .then(response => {
           swal("Update Customer!", "Customer Updated Successfully!", "success")
+          this.getCustomers();
+    })
     },
     skillsFilter(skills){
       let data="";

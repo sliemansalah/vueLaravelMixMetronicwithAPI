@@ -2321,22 +2321,22 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
       this.customerFormStatus = 'edit';
       this.$refs.customerForm.clear();
       this.fillCustomer(res[0]);
-      this.customerID = res[1];
+      this.customerID = res[0].id;
     },
     fillCustomer: function fillCustomer(res) {
-      this.$refs.customerForm.customer.name = res.data.name;
-      this.$refs.customerForm.customer.email = res.data.email;
-      this.$refs.customerForm.customer.age = res.data.age;
+      this.$refs.customerForm.customer.name = res.name;
+      this.$refs.customerForm.customer.email = res.email;
+      this.$refs.customerForm.customer.age = res.age;
 
-      if (res.data.skills.includes("angular")) {
+      if (res.jsonSkills.includes("angular")) {
         this.$refs.customerForm.customer.skills.angular = true;
       }
 
-      if (res.data.skills.includes("vue")) {
+      if (res.jsonSkills.includes("vue")) {
         this.$refs.customerForm.customer.skills.vue = true;
       }
 
-      if (res.data.skills.includes("react")) {
+      if (res.jsonSkills.includes("react")) {
         this.$refs.customerForm.customer.skills.react = true;
       }
     },
@@ -2386,21 +2386,20 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
       });
     },
     updateCustomer: function updateCustomer(data) {
-      var skills_filter = this.skillsFilter(data.skills);
+      var _this4 = this;
+
+      console.log(this.customerID);
       var customer_add = {
-        data: {
-          id: 1,
-          name: data.name,
-          age: data.age,
-          email: data.email,
-          skills: skills_filter
-        }
+        name: data.name,
+        age: data.age,
+        email: data.email,
+        skills: data.skills
       };
-      this.customers = localStorage.getItem('customers') ? JSON.parse(localStorage.getItem('customers')) : [];
-      this.customers[this.customerID] = customer_add;
-      localStorage.setItem('customers', JSON.stringify(this.customers));
-      this.details = this.customers;
-      swal("Update Customer!", "Customer Updated Successfully!", "success");
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("/api/customers/" + this.customerID, customer_add).then(function (response) {
+        swal("Update Customer!", "Customer Updated Successfully!", "success");
+
+        _this4.getCustomers();
+      });
     },
     skillsFilter: function skillsFilter(skills) {
       var data = "";
@@ -2773,6 +2772,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -2839,14 +2840,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  computed: {
-    customersCount: function customersCount() {
-      return this.$store.getters.customersCount;
-    }
-  }
-});
+
+/* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
 
@@ -23793,13 +23788,7 @@ var render = function() {
                               _vm._v("Dashboard")
                             ]),
                             _vm._v(" "),
-                            _c("span", { staticClass: "m-menu__link-badge" }, [
-                              _c(
-                                "span",
-                                { staticClass: "m-badge m-badge--danger" },
-                                [_vm._v(" " + _vm._s(_vm.customersCount))]
-                              )
-                            ])
+                            _c("span", { staticClass: "m-menu__link-badge" })
                           ])
                         ])
                       ]

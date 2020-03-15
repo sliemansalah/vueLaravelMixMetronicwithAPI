@@ -22,7 +22,6 @@
                 <span class="m-menu__link-wrap">
                   <span class="m-menu__link-text">Dashboard</span>
                   <span class="m-menu__link-badge">
-                    <span class="m-badge m-badge--danger"> {{ customersCount }}</span>
                   </span>
                 </span>
               </span>
@@ -66,12 +65,8 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
- computed: {
-            customersCount() {
-                return this.$store.getters.customersCount;
-            }
-        }
 };
 </script>
 
